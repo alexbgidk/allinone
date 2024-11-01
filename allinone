@@ -1,0 +1,70 @@
+-- Create Screen GUI
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = game.CoreGui
+
+-- Function to create GUI elements
+local function createGUI()
+    local mainFrame = Instance.new("Frame")
+    mainFrame.Size = UDim2.new(0, 120, 0, 90)
+    mainFrame.Position = UDim2.new(0, 30, 1, -100) -- Slightly to the right
+    mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    mainFrame.BackgroundTransparency = 0.4
+    mainFrame.BorderSizePixel = 0
+    mainFrame.Parent = ScreenGui
+    mainFrame.Visible = true
+
+    -- Button names and actions
+    local buttonActions = {
+        {name = "Suiryu", action = function()
+            loadstring(game:HttpGet("https://pastebin.com/raw/4Df8TRCU"))()
+        end},
+        {name = "Sweet Mask", action = function()
+            local url = "https://raw.githubusercontent.com/alexbgidk/sweet/refs/heads/main/sweetmask"
+            local response = game:HttpGet(url, true)
+            loadstring(response)()
+        end},
+        {name = "12Units", action = function()
+            local url = "https://raw.githubusercontent.com/alexbgidk/sweet/refs/heads/main/12units"
+            local response = game:HttpGet(url, true)
+            loadstring(response)()
+        end},
+    }
+
+    for i, buttonData in ipairs(buttonActions) do
+        local button = Instance.new("TextButton")
+        button.Size = UDim2.new(1, 0, 0, 25)
+        button.Position = UDim2.new(0, 0, 0, (i - 1) * 30)
+        button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+        button.TextColor3 = Color3.fromRGB(255, 255, 255)
+        button.Text = buttonData.name
+        button.Parent = mainFrame
+
+        -- Set the action for each button
+        button.MouseButton1Click:Connect(buttonData.action)
+    end
+
+    -- Keybind to toggle GUI visibility
+    local UserInputService = game:GetService("UserInputService")
+    UserInputService.InputBegan:Connect(function(input)
+        if input.KeyCode == Enum.KeyCode.L then
+            mainFrame.Visible = not mainFrame.Visible
+        end
+    end)
+end
+
+-- Function to clear GUI
+local function clearGUI()
+    if ScreenGui then
+        ScreenGui:Destroy()
+    end
+end
+
+-- Detect character reset
+local player = game.Players.LocalPlayer
+player.CharacterAdded:Connect(function()
+    clearGUI() -- Remove GUI when character is added (after reset)
+    createGUI() -- Re-create GUI after reset
+end)
+
+-- Initialize GUI on first load
+createGUI()
